@@ -514,7 +514,7 @@ function loadLang() {
       // [template, protagonist_fn, goal_fn, obstacle_fn, stakes_fn]
       {
         t: (protag, goal, obstacle, stakes) => `When <em>${protag}</em> discovers ${goal}, they must overcome ${obstacle} before ${stakes}.`,
-        weights: { Thriller: 3, Sci-Fi: 2, Action: 2, Horror: 1 }
+        weights: { Thriller: 3, "Sci-Fi": 2, Action: 2, Horror: 1 }
       },
       {
         t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> wants nothing more than ${goal}, but ${obstacle} stands in the way—and ${stakes}.`,
@@ -526,11 +526,11 @@ function loadLang() {
       },
       {
         t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> never believed in ${goal}—until ${obstacle} made it a matter of survival, and ${stakes}.`,
-        weights: { Horror: 3, Sci-Fi: 2, Mystery: 1 }
+        weights: { Horror: 3, "Sci-Fi": 2, Mystery: 1 }
       },
       {
         t: (protag, goal, obstacle, stakes) => `In a world where ${obstacle}, one unlikely soul—<em>${protag}</em>—sets out to ${goal}, risking everything because ${stakes}.`,
-        weights: { Sci-Fi: 3, Fantasy: 3, Adventure: 2 }
+        weights: { "Sci-Fi": 3, Fantasy: 3, Adventure: 2 }
       },
       {
         t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> thought ${goal} would solve everything, but ${obstacle} makes it clear: ${stakes}.`,
@@ -550,7 +550,7 @@ function loadLang() {
       },
       {
         t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> just wanted to ${goal}. Then ${obstacle} happened, and suddenly ${stakes} didn't matter anymore—survival did.`,
-        weights: { Horror: 3, Thriller: 2, Sci-Fi: 1 }
+        weights: { Horror: 3, Thriller: 2, "Sci-Fi": 1 }
       },
       {
         t: (protag, goal, obstacle, stakes) => `What starts as ${goal} becomes something far darker when <em>${protag}</em> realizes ${obstacle}—and that ${stakes}.`,
