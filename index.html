@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stormy — Random Logline Generator</title>
+  <meta name="description" content="Generate random story loglines by genre and cast type. One click, one logline, zero writer's block.">
+  <meta property="og:title" content="Stormy — Random Logline Generator">
+  <meta property="og:description" content="Stuck on your story? Get a logline in one click.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://randomstory.ai">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Stormy — Random Logline Generator">
+  <meta name="twitter:description" content="Stuck on your story? Get a logline in one click.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Stormy — Random Logline Generator",
+    "url": "https://randomstory.ai",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Generate random story loglines by genre and cast type. Free, no signup, unlimited."
+  }
+  </script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #14141f;
+      --surface-hover: #1a1a2e;
+      --accent: #6c5ce7;
+      --accent-glow: rgba(108, 92, 231, 0.3);
+      --accent-soft: #a29bfe;
+      --text: #e8e8f0;
+      --text-muted: #8888a0;
+      --success: #00cec9;
+      --warning: #fdcb6e;
+      --border: rgba(255, 255, 255, 0.06);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient background */
+    .ambient {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 20%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 80%, rgba(0, 206, 201, 0.05) 0%, transparent 50%);
+      animation: drift 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(2%, -1%) rotate(1deg); }
+      66% { transform: translate(-1%, 2%) rotate(-1deg); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 0 32px;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 50%, var(--success) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* Selectors */
+    .selectors {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .selector-group label {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .option-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .option-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 100px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .option-btn.active {
+      background: rgba(108, 92, 231, 0.15);
+      border-color: var(--accent);
+      color: var(--accent-soft);
+      font-weight: 500;
+    }
+
+    /* Roll button */
+    .roll-section {
+      margin: 8px 0 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .roll-btn {
+      position: relative;
+      background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+      border: none;
+      color: white;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      padding: 18px 48px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 24px var(--accent-glow),
+                  0 1px 3px rgba(0,0,0,0.3);
+      letter-spacing: 0.02em;
+      overflow: hidden;
+    }
+
+    .roll-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--accent-glow),
+                  0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .roll-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .roll-btn.rolling {
+      animation: pulse 0.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 24px var(--accent-glow); }
+      50% { box-shadow: 0 4px 40px rgba(108, 92, 231, 0.6); }
+    }
+
+    .roll-btn .dice-icon {
+      display: inline-block;
+      margin-right: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .roll-btn:hover .dice-icon {
+      transform: rotate(15deg);
+    }
+
+    .roll-btn.rolling .dice-icon {
+      animation: spin 0.4s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Logline output */
+    .output-area {
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logline-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      width: 100%;
+      position: relative;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .logline-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .logline-genre {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-soft);
+      margin-bottom: 12px;
+    }
+
+    .logline-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .logline-text em {
+      color: var(--success);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    /* Action buttons */
+    .logline-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      padding: 8px 16px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .action-btn.copied {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    /* Counter */
+    .counter {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .counter span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      color: var(--accent-soft);
+    }
+
+    /* Placeholder state */
+    .placeholder {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      opacity: 0.5;
+      padding: 40px 0;
+    }
+
+    .placeholder .icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 32px 0 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    footer a {
+      color: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      header { padding: 28px 0 24px; }
+      .logo { font-size: 1.8rem; }
+      .option-btn { padding: 8px 14px; font-size: 0.82rem; }
+      .roll-btn { padding: 16px 40px; font-size: 1.05rem; }
+      .logline-text { font-size: 1.05rem; }
+    }
+
+    /* Copy notification */
+    .copy-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--success);
+      color: var(--bg);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 12px 24px;
+      border-radius: 100px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .copy-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+  <div class="container">
+    <header>
+      <h1 class="logo">⚡ Stormy</h1>
+      <p class="tagline">Random logline generator for writers who stare at blank pages</p>
+    </header>
+
+    <div class="selectors">
+      <div class="selector-group">
+        <label>Genre</label>
+        <div class="option-grid" id="genre-options"></div>
+      </div>
+      <div class="selector-group">
+        <label>Cast</label>
+        <div class="option-grid" id="cast-options"></div>
+      </div>
+    </div>
+
+    <div class="roll-section">
+      <button class="roll-btn" id="roll-btn" onclick="roll()">
+        <span class="dice-icon">🎲</span> Roll a Logline
+      </button>
+    </div>
+
+    <div class="output-area">
+      <div class="placeholder" id="placeholder">
+        <div class="icon">🌪️</div>
+        Pick a genre and cast, then roll the dice
+      </div>
+      <div class="logline-card" id="logline-card">
+        <div class="logline-genre" id="logline-genre"></div>
+        <div class="logline-text" id="logline-text"></div>
+        <div class="logline-actions">
+          <button class="action-btn" onclick="copyLogline()" id="copy-btn">📋 Copy</button>
+          <button class="action-btn" onclick="roll()">🎲 Remix</button>
+          <button class="action-btn" onclick="shareLogline()">🔗 Share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="counter" id="counter">
+      <span id="count-num">0</span> loglines generated
+    </div>
+
+    <footer>
+      <p>Made by <a href="#">Digital Velcro</a> · <a href="#">What is a logline?</a></p>
+    </footer>
+  </div>
+
+  <div class="copy-toast" id="copy-toast">Copied!</div>
+
+  <script>
+    // === DATA ===
+    const genres = ['Sci-Fi', 'Fantasy', 'Horror', 'Romance', 'Thriller', 'Comedy', 'Drama', 'Mystery', 'Adventure', 'Western'];
+    const casts = ['Solo Character', 'Duo', 'Ensemble', 'Villain–Hero'];
+
+    const templates = [
+      // [template, protagonist_fn, goal_fn, obstacle_fn, stakes_fn]
+      {
+        t: (protag, goal, obstacle, stakes) => `When <em>${protag}</em> discovers ${goal}, they must overcome ${obstacle} before ${stakes}.`,
+        weights: { Thriller: 3, Sci-Fi: 2, Action: 2, Horror: 1 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> wants nothing more than ${goal}, but ${obstacle} stands in the way—and ${stakes}.`,
+        weights: { Drama: 3, Romance: 2, Comedy: 1 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `After ${obstacle}, <em>${protag}</em> must ${goal}—or ${stakes}.`,
+        weights: { Adventure: 3, Fantasy: 2, Thriller: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> never believed in ${goal}—until ${obstacle} made it a matter of survival, and ${stakes}.`,
+        weights: { Horror: 3, Sci-Fi: 2, Mystery: 1 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `In a world where ${obstacle}, one unlikely soul—<em>${protag}</em>—sets out to ${goal}, risking everything because ${stakes}.`,
+        weights: { Sci-Fi: 3, Fantasy: 3, Adventure: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> thought ${goal} would solve everything, but ${obstacle} makes it clear: ${stakes}.`,
+        weights: { Comedy: 2, Drama: 3, Romance: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `With ${obstacle} closing in, <em>${protag}</em> races to ${goal}—knowing full well that ${stakes}.`,
+        weights: { Thriller: 3, Mystery: 2, Action: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> is the last person anyone expected to ${goal}. But with ${obstacle}, they might be the only one who can prevent ${stakes}.`,
+        weights: { Adventure: 3, Fantasy: 2, Western: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `Between ${obstacle} and the promise of ${goal}, <em>${protag}</em> must choose—and ${stakes}.`,
+        weights: { Drama: 3, Romance: 2, Western: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> just wanted to ${goal}. Then ${obstacle} happened, and suddenly ${stakes} didn't matter anymore—survival did.`,
+        weights: { Horror: 3, Thriller: 2, Sci-Fi: 1 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `What starts as ${goal} becomes something far darker when <em>${protag}</em> realizes ${obstacle}—and that ${stakes}.`,
+        weights: { Mystery: 3, Thriller: 2, Horror: 2 }
+      },
+      {
+        t: (protag, goal, obstacle, stakes) => `When <em>${protag}</em> stumbles into ${goal}, they accidentally unleash ${obstacle}, and now ${stakes} hangs in the balance.`,
+        weights: { Comedy: 3, Adventure: 2, Fantasy: 1 }
+      }
+    ];
+
+    const protagonists = {
+      'Solo Character': [
+        'a washed-up detective with one last case',
+        'a teenage hacker who accidentally accessed classified files',
+        'a retired assassin pulled back for one final job',
+        'a disgraced astronaut with a one-way ticket to the edge of the galaxy',
+        'a small-town librarian who inherited a dangerous secret',
+        'a mute orphan who can hear people\'s thoughts',
+        'a former child star trying to disappear',
+        'a blind pianist who witnessed a crime',
+        'an AI gaining consciousness in a world that fears it',
+        'a war-weary healer who refuses to fight'
+      ],
+      'Duo': [
+        'an estranged father and daughter forced on the run together',
+        'two rival spies who don\'t know they work for the same agency',
+        'a con artist and a priest stuck in a haunted town',
+        'an AI and its human creator who disagree on everything',
+        'two ex-lovers assigned to the same undercover mission',
+        'a dying billionaire and the teenage hacker he hired',
+        'a cop and the criminal who got away ten years ago',
+        'twin siblings who share a curse—one feels everything, the other nothing',
+        'a mentor and apprentice on opposite sides of a war',
+        'a ghost and the only person who can see it'
+      ],
+      'Ensemble': [
+        'a crew of misfit smugglers on the galaxy\'s most wanted list',
+        'six strangers who wake up in a locked room with no memory',
+        'a band of soldiers behind enemy lines with a message that could end the war',
+        'five former classmates reunite at a reunion that turns deadly',
+        'a family of con artists targeting the wrong mark',
+        'four rival treasure hunters racing to a tomb that may not want to be found',
+        'a jury of twelve, one of whom is the killer',
+        'a street racing crew caught between two cartels',
+        'an ensemble of retired heroes called back when the world forgets why they retired',
+        'three generations of women in a family hiding a generations-old lie'
+      ],
+      'Villain–Hero': [
+        'a visionary scientist and the former student who stole their work',
+        'a demon prince and the priest sworn to destroy it',
+        'a serial killer and the profiler who thinks like them',
+        'the empire\'s most loyal general and the rebel who was once their protégé',
+        'a corrupt mayor and the journalist who won\'t stop digging',
+        'a queen and the assassin sent to end her reign',
+        'a mad god and the mortal chosen to unmake it',
+        'a poisoner and the detective who can taste anything',
+        'a time traveler and the version of themselves they\'re trying to prevent',
+        'a mother who would burn the world and the daughter trying to save it'
+      ]
+    };
+
+    const goals = {
+      'Sci-Fi': ['uncover the truth about a signal from deep space', 'hijack an AI\'s memory core before it\'s wiped', 'reach the last habitable planet before the fleet collapses', 'steal the blueprint for a reality-altering weapon', 'decipher the code embedded in their own DNA'],
+      'Fantasy': ['break a curse that has lasted a thousand years', 'find the lost sword before the dark lord does', 'cross the forbidden border to seek the last dragon', 'return the stolen artifact before the kingdom falls', 'complete the ritual that could bring back the dead'],
+      'Horror': ['survive seven nights in a house that remembers', 'uncover the source of the voices before the town disappears', 'escape a town that doesn\'t let people leave', 'find what\'s buried beneath the church before Sunday', 'stay alive until dawn in a place where the dark has teeth'],
+      'Romance': ['reconnect with the one who got away', 'prove that love can survive the longest distance', 'choose between duty and the person who makes them feel alive', 'rebuild trust after the lie that shattered everything', 'find love in a world that has outlawed it'],
+      'Thriller': ['expose a conspiracy that reaches the highest office', 'find the missing witness before the killers do', 'stop a countdown they can\'t see and don\'t understand', 'disappear before their past catches up', 'deliver a package without knowing what\'s inside'],
+      'Comedy': ['pull off the world\'s most unnecessary heist', 'survive a family dinner without revealing their secret', 'win a competition they have absolutely no talent for', 'fake their way through a job they are wildly unqualified for', 'prevent a wedding that everyone agrees is a mistake'],
+      'Drama': ['forgive the unforgivable before time runs out', 'choose between the career of a lifetime and the people who need them', 'face the truth about what really happened that night', 'rebuild a life from the wreckage of a single decision', 'let go of the past before it destroys the future'],
+      'Mystery': ['solve a murder where every suspect is lying', 'find the missing heir before the inheritance expires', 'decode a series of messages left by a dead woman', 'unravel a decades-old cold case with new evidence', 'trace the origin of an anonymous manuscript that predicts crimes'],
+      'Adventure': ['reach the summit of a mountain no one has survived', 'find a legendary city hidden beneath the desert', 'cross an ocean of monsters to deliver a message', 'race to the lost temple before the treasure is lost forever', 'navigate a jungle that rearranges itself every night'],
+      'Western': ['protect a town that doesn\'t want protecting', 'hunt down the outlaw who happens to be their brother', 'claim a piece of land someone else is willing to die for', 'survive the trail that broke everyone before them', 'bring a killer to justice in a land with no law']
+    };
+
+    const obstacles = {
+      'Sci-Fi': ['a malfunctioning AI that controls the ship', 'time dilation that ages everyone differently', 'a rival faction with a weapon that bends space', 'a biological plague that rewrites memories', 'a collapsing wormhole that\'s pulling everything in'],
+      'Fantasy': ['a betrayal from within their inner circle', 'a prophecy that demands an impossible sacrifice', 'an ancient spell that twists reality around them', 'a war that has lasted so long no one remembers why it started', 'a monster that can only be killed by someone who loves it'],
+      'Horror': ['something that shouldn\'t exist and doesn\'t want to be found', 'a ritual that can\'t be stopped once begun', 'the dead who refuse to stay dead', 'a darkness that feeds on fear and grows stronger with each passing hour', 'a mirror that shows not reflections but replacements'],
+      'Romance': ['a secret that would destroy the relationship', 'a rival who seems perfect on paper', 'circumstances that keep pulling them apart', 'a past that won\'t stay buried', 'a choice between what they want and what they owe'],
+      'Thriller': ['a double agent inside their own team', 'a countdown they can\'t see and don\'t understand', 'evidence that points to someone they trust', 'a web of lies where nothing is what it seems', 'a shadowy organization that\'s always one step ahead'],
+      'Comedy': ['a catastrophic misunderstanding that spirals wildly out of control', 'a series of escalating lies that no one can keep straight', 'a rival who is somehow both worse and better than them', 'a family secret that everyone else already knows', 'a series of unfortunate events that are almost too perfect'],
+      'Drama': ['a family that communicates through secrets', 'a past mistake that refuses to stay buried', 'a moral dilemma with no right answer', 'a truth that will shatter everything they\'ve built', 'a betrayal from the one person they trusted completely'],
+      'Mystery': ['a detective who can\'t trust their own memory', 'a suspect who seems to be everywhere at once', 'evidence that contradicts itself', 'a cover-up that spans generations', 'a key witness who changes their story every time'],
+      'Adventure': ['a guide who may be leading them to their death', 'a map that changes with the landscape', 'rival explorers who will stop at nothing to get there first', 'a series of traps designed by a madman', 'a creature that guards the path and tests their worth'],
+      'Western': ['a lawman who has stopped believing in justice', 'a gang that outnumbers them ten to one', 'a landscape as hostile as the people on it', 'a past that rides right behind them', 'a town divided by loyalty and hatred']
+    };
+
+    const stakes = {
+      'Sci-Fi': ['humanity\'s only chance at survival slips away', 'consciousness itself becomes the battlefield', 'the fabric of spacetime unravels beyond repair', 'billions hang in the balance of a single decision', 'the line between human and machine dissolves forever'],
+      'Fantasy': ['the realm falls into eternal darkness', 'magic itself dies, leaving the world defenseless', 'the balance between worlds is destroyed forever', 'the prophecy completes—and not the way anyone hoped', 'the dead rise, and this time there\'s no sealing them away'],
+      'Horror': ['sanity becomes a luxury no one can afford', 'the entity grows stronger with each passing soul', 'reality itself begins to rot from the inside out', 'what\'s buried wants to come back, and it\'s almost Sunday', 'the darkness doesn\'t just kill—it replaces'],
+      'Romance': ['two lives that could have been one are about to be lost forever', 'the lie becomes bigger than the love that built it', 'forever takes on a meaning neither of them expected', 'they\'ll lose each other not to distance but to who they\'ve become', 'the choice between them and everything else becomes permanent'],
+      'Thriller': ['the truth dies with the last witness', 'the clock reaches zero and nobody can stop it', 'trust becomes a weapon and loyalty becomes a liability', 'the wrong person gets the evidence first', 'the conspiracy completes its final phase unnoticed'],
+      'Comedy': ['absolutely everything, in the most ridiculous way possible', 'their dignity—and they\'re not sure they can afford to lose more', 'the wedding goes ahead and nobody wants that', 'they get exactly what they wanted and it\'s terrible', 'chaos wins, but at least it\'s entertaining'],
+      'Drama': ['a truth that can never be unsaid', 'the family they\'ve built is the family they might lose', 'redemption has an expiration date', 'the wound doesn\'t heal—it transforms', 'the thing they feared most becomes the thing that defines them'],
+      'Mystery': ['the killer claims another victim while everyone watches', 'the truth is buried so deep it may never surface', 'the wrong person goes to prison and the right person walks free', 'the pattern reveals itself too late to stop it', 'the case closes, but the answer doesn\'t'],
+      'Adventure': ['the map leads somewhere no one was meant to find', 'the jungle takes more than it gives', 'the summit demands a price measured in blood', 'the treasure is a curse, and the curse is already spreading', 'the journey changes them into someone they don\'t recognize'],
+      'Western': ['justice is just another word for vengeance', 'the land claims everyone eventually', 'the law is only as strong as the person enforcing it', 'the frontier isn\'t the edge of civilization—it\'s the edge of themselves', 'the bullet finds its mark, but the story doesn\'t end there']
+    };
+
+    // === STATE ===
+    let selectedGenre = null;
+    let selectedCast = null;
+    let rollCount = parseInt(localStorage.getItem('stormy-count') || '0');
+    let isRolling = false;
+
+    // === INIT ===
+    function init() {
+      const genreGrid = document.getElementById('genre-options');
+      genres.forEach(g => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = g;
+        btn.onclick = () => selectOption('genre', g, btn);
+        genreGrid.appendChild(btn);
+      });
+
+      const castGrid = document.getElementById('cast-options');
+      casts.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = c;
+        btn.onclick = () => selectOption('cast', c, btn);
+        castGrid.appendChild(btn);
+      });
+
+      document.getElementById('count-num').textContent = rollCount.toLocaleString();
+    }
+
+    function selectOption(type, value, btn) {
+      const container = btn.parentElement;
+      container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (type === 'genre') selectedGenre = value;
+      else selectedCast = value;
+    }
+
+    function pick(arr) {btn.classList.remove('rolling');
+        rollCount++;
+        localStorage.setItem('stormy-count', rollCount.toString());
+        document.getElementById('count-num').textContent = rollCount.toLocaleString();
+      }, 700);
+    }
+    function copyLogline() {
+      navigator.clipboard.writeText(lastLogline.replace(/<em>|<\/em>/g, '')).then(() => {
+        const toast = document.getElementById('copy-toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+        const btn = document.getElementById('copy-btn');
+        btn.classList.add('copied');
+        btn.textContent = '✅ Copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 Copy'; }, 2000);
+      });
+    }
+    function shareLogline() {
+      const text = lastLogline.replace(/<em>|<\/em>/g, '');
+      if (navigator.share) {
+        navigator.share({ title: 'Stormy Logline', text: text + ' — randomstory.ai' });
+      } else {
+        navigator.clipboard.writeText(text + ' — randomstory.ai');
+        const toast = document.getElementById('copy-toast');
+        toast.textContent = 'Link copied!';
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); toast.textContent = 'Copied!'; }, 2000);
+      }
+    }
+    init();
+  </script>
+</body>
+</html>
