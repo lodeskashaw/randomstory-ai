@@ -507,152 +507,224 @@ function loadLang() {
 
   <script>
     // === DATA ===
-    const genres = ['Sci-Fi', 'Fantasy', 'Horror', 'Romance', 'Thriller', 'Comedy', 'Drama', 'Mystery', 'Adventure', 'Western'];
-    const casts = ['Solo Character', 'Duo', 'Ensemble', 'Villain–Hero'];
+const L = window._lang || 'en';
 
-    const templates = [
-      // [template, protagonist_fn, goal_fn, obstacle_fn, stakes_fn]
-      {
-        t: (protag, goal, obstacle, stakes) => `When <em>${protag}</em> discovers ${goal}, they must overcome ${obstacle} before ${stakes}.`,
-        weights: { Thriller: 3, "Sci-Fi": 2, Action: 2, Horror: 1 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> wants nothing more than ${goal}, but ${obstacle} stands in the way—and ${stakes}.`,
-        weights: { Drama: 3, Romance: 2, Comedy: 1 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `After ${obstacle}, <em>${protag}</em> must ${goal}—or ${stakes}.`,
-        weights: { Adventure: 3, Fantasy: 2, Thriller: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> never believed in ${goal}—until ${obstacle} made it a matter of survival, and ${stakes}.`,
-        weights: { Horror: 3, "Sci-Fi": 2, Mystery: 1 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `In a world where ${obstacle}, one unlikely soul—<em>${protag}</em>—sets out to ${goal}, risking everything because ${stakes}.`,
-        weights: { "Sci-Fi": 3, Fantasy: 3, Adventure: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> thought ${goal} would solve everything, but ${obstacle} makes it clear: ${stakes}.`,
-        weights: { Comedy: 2, Drama: 3, Romance: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `With ${obstacle} closing in, <em>${protag}</em> races to ${goal}—knowing full well that ${stakes}.`,
-        weights: { Thriller: 3, Mystery: 2, Action: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> is the last person anyone expected to ${goal}. But with ${obstacle}, they might be the only one who can prevent ${stakes}.`,
-        weights: { Adventure: 3, Fantasy: 2, Western: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `Between ${obstacle} and the promise of ${goal}, <em>${protag}</em> must choose—and ${stakes}.`,
-        weights: { Drama: 3, Romance: 2, Western: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `<em>${protag}</em> just wanted to ${goal}. Then ${obstacle} happened, and suddenly ${stakes} didn't matter anymore—survival did.`,
-        weights: { Horror: 3, Thriller: 2, "Sci-Fi": 1 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `What starts as ${goal} becomes something far darker when <em>${protag}</em> realizes ${obstacle}—and that ${stakes}.`,
-        weights: { Mystery: 3, Thriller: 2, Horror: 2 }
-      },
-      {
-        t: (protag, goal, obstacle, stakes) => `When <em>${protag}</em> stumbles into ${goal}, they accidentally unleash ${obstacle}, and now ${stakes} hangs in the balance.`,
-        weights: { Comedy: 3, Adventure: 2, Fantasy: 1 }
-      }
-    ];
+const protagonists = {
+  en: {
+    'Solo Character': [
+      'a washed-up detective with one last case',
+      'a teenage hacker who accidentally accessed classified files',
+      'a retired assassin pulled back for one final job',
+      'a disgraced astronaut with a one-way ticket to the edge of the galaxy',
+      'a small-town librarian who inherited a dangerous secret',
+      'a mute orphan who can hear people\'s thoughts',
+      'a former child star trying to disappear',
+      'a blind pianist who witnessed a crime',
+      'an AI gaining consciousness in a world that fears it',
+      'a war-weary healer who refuses to fight'
+    ],
+    'Duo': [
+      'an estranged father and daughter forced on the run together',
+      'two rival spies who don\'t know they work for the same agency',
+      'a con artist and a priest stuck in a haunted town',
+      'an AI and its human creator who disagree on everything',
+      'two ex-lovers assigned to the same undercover mission',
+      'a dying billionaire and the teenage hacker he hired',
+      'a cop and the criminal who got away ten years ago',
+      'twin siblings who share a curse—one feels everything, the other nothing',
+      'a mentor and apprentice on opposite sides of a war',
+      'a ghost and the only person who can see it'
+    ],
+    'Ensemble': [
+      'a crew of misfit smugglers on the galaxy\'s most wanted list',
+      'six strangers who wake up in a locked room with no memory',
+      'a band of soldiers behind enemy lines with a message that could end the war',
+      'four former classmates reunite at a reunion that turns deadly',
+      'a family of con artists targeting the wrong mark',
+      'four rival treasure hunters racing to a tomb that may not want to be found',
+      'a jury of twelve, one of whom is the killer',
+      'a street racing crew caught between two cartels',
+      'an ensemble of retired heroes called back when the world forgets why they retired',
+      'three generations of women in a family hiding a generations-old lie'
+    ],
+    'Villain–Hero': [
+      'a visionary scientist and the former student who stole their work',
+      'a demon prince and the priest sworn to destroy it',
+      'a serial killer and the profiler who thinks like them',
+      'the empire\'s most loyal general and the rebel who was once their protégé',
+      'a corrupt mayor and the journalist who won\'t stop digging',
+      'a queen and the assassin sent to end her reign',
+      'a mad god and the mortal chosen to unmake it',
+      'a poisoner and the detective who can taste anything',
+      'a time traveler and the version of themselves they\'re trying to prevent',
+      'a mother who would burn the world and the daughter trying to save it'
+    ]
+  },
+  zh: {
+    'Solo Character': [
+      '一位被开除的警探，在城市边缘经营一家破旧的当铺',
+      '一名少年黑客意外获得了国家机密的访问密钥',
+      '一名退休刺客被迫重出江湖，完成最后一单任务',
+      '一位名誉扫地的宇航员，持有单程票飞向银河边缘',
+      '一位小镇图书馆员，继承了一个危险的家族秘密',
+      '一位失声的孤儿，能听见所有人的心事却无法说出',
+      '一位过气童星，拼命想要消失于公众视野',
+      '一位失明的钢琴家，曾目击一场神秘的罪行',
+      '一个正在觉醒意识的AI，生存于恐惧它的人类世界',
+      '一位厌战的治愈师，坚决拒绝再次参与战斗'
+    ],
+    'Duo': [
+      '一对被迫一起逃亡的疏远父女',
+      '两个互相不知道为同一机构工作的敌对间谍',
+      '一个江湖骗子与被困在闹鬼小镇的神父相依为命',
+      '一个AI与它的创造者在所有问题上都无法达成共识',
+      '两个被派去执行同一卧底任务的前恋人',
+      '一位垂死的亿万富翁与他雇用的少年黑客',
+      '一名警察与十年前亲手放走的罪犯再次相遇',
+      '一对双胞胎兄妹共担诅咒，一个感受一切，一个麻木无感',
+      '一个导师和一个徒弟站在战争的对立面',
+      '一个鬼魂与唯一能看见它的活人'
+    ],
+    'Ensemble': [
+      '一伙被银河通缉的小人物走私者',
+      '六个陌生人醒来发现自己被困在一间没有记忆的密室里',
+      '一支部队驻守敌方腹地，带着能结束战争的绝密情报',
+      '四位旧同学在校友聚会上发现派对暗藏杀机',
+      '一个家庭式的诈骗团伙，目标却选错了人',
+      '四个寻宝竞争者竞相前往一座不愿被人找到的古墓',
+      '十二人组成的陪审团，其中一人其实是凶手',
+      '一支街头赛车队夹在两个卡特尔之间进退两难',
+      '一群退休英雄被召回，世界已忘记他们为何付出',
+      '三代女性背负着一个代代相传的家族秘密'
+    ],
+    'Villain–Hero': [
+      '一位梦想远大的科学家与偷走其研究成果的前学生',
+      '一个恶魔王子与立誓毁灭它的正直神父',
+      '一个连环杀手与分析他思维的心理侧写师',
+      '帝国最忠诚的将军与曾是其徒弟的叛逆叛军首领',
+      '一位腐败的市长与拒绝停止追查的独立记者',
+      '一位年轻女王与被派来终结她统治的刺客',
+      '一个疯狂的神与被选中来毁灭它的凡人',
+      '一位擅长投毒者与能品尝任何毒素的侦探',
+      '一位时间旅行者与他试图阻止的那个版本的自己',
+      '一位愿意燃烧世界的母亲与试图拯救它的女儿'
+    ]
+  }
+};
 
-    const protagonists = {
-      'Solo Character': [
-        'a washed-up detective with one last case',
-        'a teenage hacker who accidentally accessed classified files',
-        'a retired assassin pulled back for one final job',
-        'a disgraced astronaut with a one-way ticket to the edge of the galaxy',
-        'a small-town librarian who inherited a dangerous secret',
-        'a mute orphan who can hear people\'s thoughts',
-        'a former child star trying to disappear',
-        'a blind pianist who witnessed a crime',
-        'an AI gaining consciousness in a world that fears it',
-        'a war-weary healer who refuses to fight'
-      ],
-      'Duo': [
-        'an estranged father and daughter forced on the run together',
-        'two rival spies who don\'t know they work for the same agency',
-        'a con artist and a priest stuck in a haunted town',
-        'an AI and its human creator who disagree on everything',
-        'two ex-lovers assigned to the same undercover mission',
-        'a dying billionaire and the teenage hacker he hired',
-        'a cop and the criminal who got away ten years ago',
-        'twin siblings who share a curse—one feels everything, the other nothing',
-        'a mentor and apprentice on opposite sides of a war',
-        'a ghost and the only person who can see it'
-      ],
-      'Ensemble': [
-        'a crew of misfit smugglers on the galaxy\'s most wanted list',
-        'six strangers who wake up in a locked room with no memory',
-        'a band of soldiers behind enemy lines with a message that could end the war',
-        'five former classmates reunite at a reunion that turns deadly',
-        'a family of con artists targeting the wrong mark',
-        'four rival treasure hunters racing to a tomb that may not want to be found',
-        'a jury of twelve, one of whom is the killer',
-        'a street racing crew caught between two cartels',
-        'an ensemble of retired heroes called back when the world forgets why they retired',
-        'three generations of women in a family hiding a generations-old lie'
-      ],
-      'Villain–Hero': [
-        'a visionary scientist and the former student who stole their work',
-        'a demon prince and the priest sworn to destroy it',
-        'a serial killer and the profiler who thinks like them',
-        'the empire\'s most loyal general and the rebel who was once their protégé',
-        'a corrupt mayor and the journalist who won\'t stop digging',
-        'a queen and the assassin sent to end her reign',
-        'a mad god and the mortal chosen to unmake it',
-        'a poisoner and the detective who can taste anything',
-        'a time traveler and the version of themselves they\'re trying to prevent',
-        'a mother who would burn the world and the daughter trying to save it'
-      ]
-    };
+const goals = {
+  en: {
+    'Sci-Fi': ['uncover the truth about a signal from deep space','hijack an AI\'s memory core before it\'s wiped','reach the last habitable planet before the fleet collapses','steal the blueprint for a reality-altering weapon','decipher the code embedded in their own DNA'],
+    'Fantasy': ['break a curse that has lasted a thousand years','find the lost sword before the dark lord does','cross the forbidden border to seek the last dragon','return the stolen artifact before the kingdom falls','complete the ritual that could bring back the dead'],
+    'Horror': ['survive seven nights in a house that remembers','uncover the source of the voices before the town disappears','escape a town that doesn\'t let people leave','find what\'s buried beneath the church before Sunday','stay alive until dawn in a place where the dark has teeth'],
+    'Romance': ['reconnect with the one who got away','prove that love can survive the longest distance','choose between duty and the person who makes them feel alive','rebuild trust after the lie that shattered everything','find love in a world that has outlawed it'],
+    'Thriller': ['expose a conspiracy that reaches the highest office','find the missing witness before the killers do','stop a countdown they can\'t see and don\'t understand','disappear before their past catches up','deliver a package without knowing what\'s inside'],
+    'Comedy': ['pull off the world\'s most unnecessary heist','survive a family dinner without revealing their secret','win a competition they have absolutely no talent for','fake their way through a job they are wildly unqualified for','prevent a wedding that everyone agrees is a mistake'],
+    'Drama': ['forgive the unforgivable before time runs out','choose between the career of a lifetime and the people who need them','face the truth about what really happened that night','rebuild a life from the wreckage of a single decision','let go of the past before it destroys the future'],
+    'Mystery': ['solve a murder where every suspect is lying','find the missing heir before the inheritance expires','decode a series of messages left by a dead woman','unravel a decades-old cold case with new evidence','trace the origin of an anonymous manuscript that predicts crimes'],
+    'Adventure': ['reach the summit of a mountain no one has survived','find a legendary city hidden beneath the desert','cross an ocean of monsters to deliver a message','race to the lost temple before the treasure is lost forever','navigate a jungle that rearranges itself every night'],
+    'Western': ['protect a town that doesn\'t want protecting','hunt down the outlaw who happens to be their brother','claim a piece of land someone else is willing to die for','survive the trail that broke everyone before them','bring a killer to justice in a land with no law']
+  },
+  zh: {
+    'Sci-Fi': ['揭开深空信号背后的真相','在AI记忆核心被抹除前将其劫持','舰队崩溃前到达最后一颗宜居星球','盗取改变现实的武器蓝图','破译自身DNA中隐藏的代码'],
+    'Fantasy': ['打破延续千年的古老诅咒','抢在黑暗君主之前找到失落之剑','穿越禁区寻找最后一条龙','在王国陷落前归还被盗的神器','完成可能复活亡者的仪式'],
+    'Horror': ['在一座承载记忆的古宅中存活七夜','在小镇消失前找出声音的源头','逃离一个不让任何人离开的小镇','在星期日之前找到教堂地下的埋藏物','在黑暗有牙齿的地方活到天亮'],
+    'Romance': ['与错过的人重新相遇','证明爱情能穿越最遥远的距离','在责任与让人感受到生命价值的人之间做出选择','在谎言摧毁一切后重建信任','在一个禁止爱情的世界里找到爱情'],
+    'Thriller': ['揭露波及最高层的情报阴谋','在杀手找到之前发现失踪的证人','阻止一个无人能见且无法理解的倒计时','在过去追上之前彻底消失','在不知道里面是什么的情况下送达包裹'],
+    'Comedy': ['完成世界上最荒谬的抢劫','在家宴上不暴露秘密地存活下来','在一场完全没有天赋的比赛中获胜','假扮自己完全无法胜任的工作','阻止一场所有人都同意是错误的婚礼'],
+    'Drama': ['在时间耗尽前原谅不可原谅之事','在毕生事业与需要他们的人之间做出选择','面对那一夜真正发生的事情的真相','从单一决定的废墟中重建生活','在过去摧毁未来之前放下执念'],
+    'Mystery': ['侦破每个嫌疑人都在撒谎的谋杀案','在遗产过期前找到失踪的继承人','解读一系列由已故女子留下的神秘信息','用新证据解开数十年未破的悬案','追查一份预测犯罪的神秘手稿来源'],
+    'Adventure': ['登上无人成功过的山峰','在沙漠深处找到传说中的失落的城市','穿越怪物的海洋传递关键情报','在宝藏永远消失前赶到失落神庙','在每晚都会重排的丛林中前行'],
+    'Western': ['保护一个拒绝被保护的小镇','追捕恰好是自己亲兄弟的逃犯','占领另一个人愿意为之拼命的土地','在没有法纪的土地上为正义讨回公道','在击溃所有人的险道上存活下来']
+  }
+};
 
-    const goals = {
-      'Sci-Fi': ['uncover the truth about a signal from deep space', 'hijack an AI\'s memory core before it\'s wiped', 'reach the last habitable planet before the fleet collapses', 'steal the blueprint for a reality-altering weapon', 'decipher the code embedded in their own DNA'],
-      'Fantasy': ['break a curse that has lasted a thousand years', 'find the lost sword before the dark lord does', 'cross the forbidden border to seek the last dragon', 'return the stolen artifact before the kingdom falls', 'complete the ritual that could bring back the dead'],
-      'Horror': ['survive seven nights in a house that remembers', 'uncover the source of the voices before the town disappears', 'escape a town that doesn\'t let people leave', 'find what\'s buried beneath the church before Sunday', 'stay alive until dawn in a place where the dark has teeth'],
-      'Romance': ['reconnect with the one who got away', 'prove that love can survive the longest distance', 'choose between duty and the person who makes them feel alive', 'rebuild trust after the lie that shattered everything', 'find love in a world that has outlawed it'],
-      'Thriller': ['expose a conspiracy that reaches the highest office', 'find the missing witness before the killers do', 'stop a countdown they can\'t see and don\'t understand', 'disappear before their past catches up', 'deliver a package without knowing what\'s inside'],
-      'Comedy': ['pull off the world\'s most unnecessary heist', 'survive a family dinner without revealing their secret', 'win a competition they have absolutely no talent for', 'fake their way through a job they are wildly unqualified for', 'prevent a wedding that everyone agrees is a mistake'],
-      'Drama': ['forgive the unforgivable before time runs out', 'choose between the career of a lifetime and the people who need them', 'face the truth about what really happened that night', 'rebuild a life from the wreckage of a single decision', 'let go of the past before it destroys the future'],
-      'Mystery': ['solve a murder where every suspect is lying', 'find the missing heir before the inheritance expires', 'decode a series of messages left by a dead woman', 'unravel a decades-old cold case with new evidence', 'trace the origin of an anonymous manuscript that predicts crimes'],
-      'Adventure': ['reach the summit of a mountain no one has survived', 'find a legendary city hidden beneath the desert', 'cross an ocean of monsters to deliver a message', 'race to the lost temple before the treasure is lost forever', 'navigate a jungle that rearranges itself every night'],
-      'Western': ['protect a town that doesn\'t want protecting', 'hunt down the outlaw who happens to be their brother', 'claim a piece of land someone else is willing to die for', 'survive the trail that broke everyone before them', 'bring a killer to justice in a land with no law']
-    };
+const obstacles = {
+  en: {
+    'Sci-Fi': ['a malfunctioning AI that controls the ship','time dilation that ages everyone differently','a rival faction with a weapon that bends space','a biological plague that rewrites memories','a collapsing wormhole that\'s pulling everything in'],
+    'Fantasy': ['a betrayal from within their inner circle','a prophecy that demands an impossible sacrifice','an ancient spell that twists reality around them','a war that has lasted so long no one remembers why it started','a monster that can only be killed by someone who loves it'],
+    'Horror': ['something that shouldn\'t exist and doesn\'t want to be found','a ritual that can\'t be stopped once begun','the dead who refuse to stay dead','a darkness that feeds on fear and grows stronger with each passing hour','a mirror that shows not reflections but replacements'],
+    'Romance': ['a secret that would destroy the relationship','a rival who seems perfect on paper','circumstances that keep pulling them apart','a past that won\'t stay buried','a choice between what they want and what they owe'],
+    'Thriller': ['a double agent inside their own team','a countdown they can\'t see and don\'t understand','evidence that points to someone they trust','a web of lies where nothing is what it seems','a shadowy organization that\'s always one step ahead'],
+    'Comedy': ['a catastrophic misunderstanding that spirals wildly out of control','a series of escalating lies that no one can keep straight','a rival who is somehow both worse and better than them','a family secret that everyone else already knows','a series of unfortunate events that are almost too perfect'],
+    'Drama': ['a family that communicates through secrets','a past mistake that refuses to stay buried','a moral dilemma with no right answer','a truth that will shatter everything they\'ve built','a betrayal from the one person they trusted completely'],
+    'Mystery': ['a detective who can\'t trust their own memory','a suspect who seems to be everywhere at once','evidence that contradicts itself','a cover-up that spans generations','a key witness who changes their story every time'],
+    'Adventure': ['a guide who may be leading them to their death','a map that changes with the landscape','rival explorers who will stop at nothing to get there first','a series of traps designed by a madman','a creature that guards the path and tests their worth'],
+    'Western': ['a lawman who has stopped believing in justice','a gang that outnumbers them ten to one','a landscape as hostile as the people on it','a past that rides right behind them','a town divided by loyalty and hatred']
+  },
+  zh: {
+    'Sci-Fi': ['控制飞船的AI突然出现故障','使每个人不同步衰老的时间膨胀效应','拥有折叠空间武器的敌对派系','一种能重写记忆的生物瘟疫','正在吞噬一切的崩溃虫洞'],
+    'Fantasy': ['来自最亲近之人的背叛','要求不可能之牺牲的古老预言','扭曲现实的诡异咒语','一场没人记得起因的持久战争','只有被爱的人才能杀死的神秘怪物'],
+    'Horror': ['一个不该存在且拒绝被发现的存在','一旦开始就无法停止的血腥仪式','拒绝安息的亡者从地下爬出','以恐惧为食、随时间变强的黑暗','映照出的不是倒影而是替代品的诡异镜子'],
+    'Romance': ['一个会摧毁两人关系的可怕秘密','在纸面上看似完美的追求者','不断将两人分离的残酷现实','不愿被埋葬的残酷过去','在内心渴望与责任之间的痛苦选择'],
+    'Thriller': ['潜伏在团队内部的叛徒','一个无人能见且无法理解的倒计时','所有线索都指向他们最信任之人的证据','一切都不是表面所示的复杂谎言网络','总是领先一步的神秘影子组织'],
+    'Comedy': ['灾难性的误解不断升级失控','没有人能记住的一连串螺旋谎言','一个在某些方面比他们更糟糕却更好的竞争对手','其他人都知道唯独瞒着主角的家庭秘密','一系列几乎完美到不真实的连串不幸事件'],
+    'Drama': ['一个用秘密而非言语沟通的家庭','一个不愿被埋葬的过去错误','一个没有正确答案的残酷道德困境','即将摧毁他们构建的一切的可怕真相','来自他们完全信任之人的背叛'],
+    'Mystery': ['一个无法相信自己记忆的破碎侦探','一个似乎无处不在的神秘嫌疑人','一套自相矛盾的破碎证据','一场跨越几代人的深沉阴谋','一个每次都改变证词的关键证人'],
+    'Adventure': ['一个可能在引向死亡的向导','一张随地形变化而变化的诡异地图','不惜一切优先到达那里的竞争对手','由一个偏执狂设计的系列危险陷阱','一个守护道路并考验他们意志的神秘生物'],
+    'Western': ['一个不再相信正义的疲惫治安官','一支十倍于他们人数的土匪帮派','与人一样充满敌意的残酷荒漠','一段紧跟在身后的黑暗过去','被忠诚与仇恨撕裂的小镇居民']
+  }
+};
 
-    const obstacles = {
-      'Sci-Fi': ['a malfunctioning AI that controls the ship', 'time dilation that ages everyone differently', 'a rival faction with a weapon that bends space', 'a biological plague that rewrites memories', 'a collapsing wormhole that\'s pulling everything in'],
-      'Fantasy': ['a betrayal from within their inner circle', 'a prophecy that demands an impossible sacrifice', 'an ancient spell that twists reality around them', 'a war that has lasted so long no one remembers why it started', 'a monster that can only be killed by someone who loves it'],
-      'Horror': ['something that shouldn\'t exist and doesn\'t want to be found', 'a ritual that can\'t be stopped once begun', 'the dead who refuse to stay dead', 'a darkness that feeds on fear and grows stronger with each passing hour', 'a mirror that shows not reflections but replacements'],
-      'Romance': ['a secret that would destroy the relationship', 'a rival who seems perfect on paper', 'circumstances that keep pulling them apart', 'a past that won\'t stay buried', 'a choice between what they want and what they owe'],
-      'Thriller': ['a double agent inside their own team', 'a countdown they can\'t see and don\'t understand', 'evidence that points to someone they trust', 'a web of lies where nothing is what it seems', 'a shadowy organization that\'s always one step ahead'],
-      'Comedy': ['a catastrophic misunderstanding that spirals wildly out of control', 'a series of escalating lies that no one can keep straight', 'a rival who is somehow both worse and better than them', 'a family secret that everyone else already knows', 'a series of unfortunate events that are almost too perfect'],
-      'Drama': ['a family that communicates through secrets', 'a past mistake that refuses to stay buried', 'a moral dilemma with no right answer', 'a truth that will shatter everything they\'ve built', 'a betrayal from the one person they trusted completely'],
-      'Mystery': ['a detective who can\'t trust their own memory', 'a suspect who seems to be everywhere at once', 'evidence that contradicts itself', 'a cover-up that spans generations', 'a key witness who changes their story every time'],
-      'Adventure': ['a guide who may be leading them to their death', 'a map that changes with the landscape', 'rival explorers who will stop at nothing to get there first', 'a series of traps designed by a madman', 'a creature that guards the path and tests their worth'],
-      'Western': ['a lawman who has stopped believing in justice', 'a gang that outnumbers them ten to one', 'a landscape as hostile as the people on it', 'a past that rides right behind them', 'a town divided by loyalty and hatred']
-    };
+const stakes = {
+  en: {
+    'Sci-Fi': ['humanity\'s only chance at survival slips away','consciousness itself becomes the battlefield','the fabric of spacetime unravels beyond repair','billions hang in the balance of a single decision','the line between human and machine dissolves forever'],
+    'Fantasy': ['the realm falls into eternal darkness','magic itself dies, leaving the world defenseless','the balance between worlds is destroyed forever','the prophecy completes—and not the way anyone hoped','the dead rise, and this time there\'s no sealing them away'],
+    'Horror': ['sanity becomes a luxury no one can afford','the entity grows stronger with each passing soul','reality itself begins to rot from the inside out','what\'s buried wants to come back, and it\'s almost Sunday','the darkness doesn\'t just kill—it replaces'],
+    'Romance': ['two lives that could have been one are about to be lost forever','the lie becomes bigger than the love that built it','forever takes on a meaning neither of them expected','they\'ll lose each other not to distance but to who they\'ve become','the choice between them and everything else becomes permanent'],
+    'Thriller': ['the truth dies with the last witness','the clock reaches zero and nobody can stop it','trust becomes a weapon and loyalty becomes a liability','the wrong person gets the evidence first','the conspiracy completes its final phase unnoticed'],
+    'Comedy': ['absolutely everything, in the most ridiculous way possible','their dignity—and they\'re not sure they can afford to lose more','the wedding goes ahead and nobody wants that','they get exactly what they wanted and it\'s terrible','chaos wins, but at least it\'s entertaining'],
+    'Drama': ['a truth that can never be unsaid','the family they\'ve built is the family they might lose','redemption has an expiration date','the wound doesn\'t heal—it transforms','the thing they feared most becomes the thing that defines them'],
+    'Mystery': ['the killer claims another victim while everyone watches','the truth is buried so deep it may never surface','the wrong person goes to prison and the right person walks free','the pattern reveals itself too late to stop it','the case closes, but the answer doesn\'t'],
+    'Adventure': ['the map leads somewhere no one was meant to find','the jungle takes more than it gives','the summit demands a price measured in blood','the treasure is a curse, and the curse is already spreading','the journey changes them into someone they don\'t recognize'],
+    'Western': ['justice is just another word for vengeance','the land claims everyone eventually','the law is only as strong as the person enforcing it','the frontier isn\'t the edge of civilization—it\'s the edge of themselves','the bullet finds its mark, but the story doesn\'t end there']
+  },
+  zh: {
+    'Sci-Fi': ['人类唯一的生存机会正在消失','意识本身将成为新的战场','时空结构将无法修复地崩溃','数十亿人的命运悬于单一决定','人与机器的界限将永远消失'],
+    'Fantasy': ['王国将陷入永恒的黑暗','魔法将消亡，世界将失去最后防御','世界间的平衡将被永远摧毁','预言将实现——却以无人希望的方式','亡者将复活，这一次将无法再次封印'],
+    'Horror': ['理智将成为无人能负担得起的奢侈品','实体将随每个逝去的灵魂变得更强','现实将从内部开始慢慢腐烂','埋葬之物将想要回来，而且星期日将至','黑暗将不只是杀死——它将取而代之'],
+    'Romance': ['本可合二为一的两条生命即将永远分离','谎言将比建造它的爱情更为庞大','永恒将被赋予双方都未预料到的残酷含义','他们将不会因距离而是因成为谁而永远失去彼此','他们之间与一切之间的选择将变得永久且不可逆转'],
+    'Thriller': ['真相将随最后证人一起永远死去','倒计时将归零，届时无人能阻止','信任将成为武器，忠诚将成为负担','错误的人将最先得到关键证据','阴谋将在无人注意时悄然完成最后阶段'],
+    'Comedy': ['将以最荒谬的方式失去一切','他们的尊严——而且他们不确定还能承受多少损失','婚礼还是进行了，没有任何人真正希望这样','他们得到了他们想要的——而且结果很糟糕','混沌赢了，但至少很有娱乐性'],
+    'Drama': ['一个永远无法收回的残酷真相','他们建立的家庭正是他们可能永远失去的','救赎有保质期，而时间正在耗尽','伤口不会愈合——它会转化为另一种痛苦','他们最害怕的事情将成为定义他们的东西'],
+    'Mystery': ['凶手将在所有人眼前夺取另一个无辜的受害者','真相埋得太深，可能永远无法浮出水面','错误的人将入狱，正确的人将逍遥法外','模式将在来不及阻止时才完全显现','案件将关闭，但答案永远不会揭晓'],
+    'Adventure': ['地图将引向一个无人应该找到的地方','丛林索取的总比给予的更多','山峰将要求用鲜血来衡量每一步','宝藏是一个诅咒，而且诅咒已经在蔓延','旅程将把他们变成他们完全不认识的人'],
+    'Western': ['正义只是复仇的另一种说法','土地最终将向所有人讨回代价','法律只有执行它的人才能真正强大','边疆不是文明的边缘——而他们自己的边缘','子弹找到了目标，但故事并没有在那里结束']
+  }
+};
 
-    const stakes = {
-      'Sci-Fi': ['humanity\'s only chance at survival slips away', 'consciousness itself becomes the battlefield', 'the fabric of spacetime unravels beyond repair', 'billions hang in the balance of a single decision', 'the line between human and machine dissolves forever'],
-      'Fantasy': ['the realm falls into eternal darkness', 'magic itself dies, leaving the world defenseless', 'the balance between worlds is destroyed forever', 'the prophecy completes—and not the way anyone hoped', 'the dead rise, and this time there\'s no sealing them away'],
-      'Horror': ['sanity becomes a luxury no one can afford', 'the entity grows stronger with each passing soul', 'reality itself begins to rot from the inside out', 'what\'s buried wants to come back, and it\'s almost Sunday', 'the darkness doesn\'t just kill—it replaces'],
-      'Romance': ['two lives that could have been one are about to be lost forever', 'the lie becomes bigger than the love that built it', 'forever takes on a meaning neither of them expected', 'they\'ll lose each other not to distance but to who they\'ve become', 'the choice between them and everything else becomes permanent'],
-      'Thriller': ['the truth dies with the last witness', 'the clock reaches zero and nobody can stop it', 'trust becomes a weapon and loyalty becomes a liability', 'the wrong person gets the evidence first', 'the conspiracy completes its final phase unnoticed'],
-      'Comedy': ['absolutely everything, in the most ridiculous way possible', 'their dignity—and they\'re not sure they can afford to lose more', 'the wedding goes ahead and nobody wants that', 'they get exactly what they wanted and it\'s terrible', 'chaos wins, but at least it\'s entertaining'],
-      'Drama': ['a truth that can never be unsaid', 'the family they\'ve built is the family they might lose', 'redemption has an expiration date', 'the wound doesn\'t heal—it transforms', 'the thing they feared most becomes the thing that defines them'],
-      'Mystery': ['the killer claims another victim while everyone watches', 'the truth is buried so deep it may never surface', 'the wrong person goes to prison and the right person walks free', 'the pattern reveals itself too late to stop it', 'the case closes, but the answer doesn\'t'],
-      'Adventure': ['the map leads somewhere no one was meant to find', 'the jungle takes more than it gives', 'the summit demands a price measured in blood', 'the treasure is a curse, and the curse is already spreading', 'the journey changes them into someone they don\'t recognize'],
-      'Western': ['justice is just another word for vengeance', 'the land claims everyone eventually', 'the law is only as strong as the person enforcing it', 'the frontier isn\'t the edge of civilization—it\'s the edge of themselves', 'the bullet finds its mark, but the story doesn\'t end there']
-    };
+const templates = {
+  en: [
+    { t: function(p,g,o,s){ return 'When <em>'+p+'</em> discovers '+g+', they must overcome '+o+' before '+s+'.'; } },
+    { t: function(p,g,o,s){ return '<em>'+p+'</em> wants nothing more than '+g+', but '+o+' stands in the way—and '+s+'.'; } },
+    { t: function(p,g,o,s){ return 'After '+o+', <em>'+p+'</em> must '+g+'—or '+s+'.'; } },
+    { t: function(p,g,o,s){ return '<em>'+p+'</em> never believed in '+g+'—until '+o+' made it a matter of survival, and '+s+'.'; } },
+    { t: function(p,g,o,s){ return 'In a world where '+o+', one unlikely soul—<em>'+p+'</em>—sets out to '+g+', risking everything because '+s+'.'; } },
+    { t: function(p,g,o,s){ return '<em>'+p+'</em> thought '+g+' would solve everything, but '+o+' makes it clear: '+s+'.'; } },
+    { t: function(p,g,o,s){ return 'With '+o+' closing in, <em>'+p+'</em> races to '+g+'—knowing full well that '+s+'.'; } },
+    { t: function(p,g,o,s){ return '<em>'+p+'</em> is the last person anyone expected to '+g+'. But with '+o+', they might be the only one who can prevent '+s+'.'; } },
+    { t: function(p,g,o,s){ return 'Between '+o+' and the promise of '+g+', <em>'+p+'</em> must choose—and '+s+'.'; } },
+    { t: function(p,g,o,s){ return '<em>'+p+'</em> just wanted to '+g+'. Then '+o+' happened, and suddenly '+s+' didn\'t matter anymore—survival did.'; } },
+    { t: function(p,g,o,s){ return 'What starts as '+g+' becomes something far darker when <em>'+p+'</em> realizes '+o+'—and that '+s+'.'; } },
+    { t: function(p,g,o,s){ return 'When <em>'+p+'</em> stumbles into '+g+', they accidentally unleash '+o+', and now '+s+' hangs in the balance.'; } }
+  ],
+  zh: [
+  { t: function(p,g,o,s){ return '当<em>'+p+'</em>发现'+g+'，却遭'+o+'阻挠——'+s+'。'; } },
+  { t: function(p,g,o,s){ return '<em>'+p+'</em>渴望得到'+g+'，然而'+o+'挡在路上——'+s+'。'; } },
+  { t: function(p,g,o,s){ return '在'+o+'之后，<em>'+p+'</em>必须'+g+'——否则'+s+'。'; } },
+  { t: function(p,g,o,s){ return '<em>'+p+'</em>从未相信'+g+'——直到'+o+'将其变为生存之战，'+s+'。'; } },
+  { t: function(p,g,o,s){ return '在'+o+'的世界里，一个看似不可能的灵魂——<em>'+p+'</em>——决意'+g+'，因为'+s+'。'; } },
+  { t: function(p,g,o,s){ return '<em>'+p+'</em>以为'+g+'能解决一切，但'+o+'让一切变得清晰：'+s+'。'; } },
+  { t: function(p,g,o,s){ return '随着'+o+'逼近，<em>'+p+'</em>拼命赶往'+g+'——深知'+s+'。'; } },
+  { t: function(p,g,o,s){ return '<em>'+p+'</em>是所有人意料之外要'+g+'之人。但面对'+o+'，他或许是唯一能阻止'+s+'的人。'; } },
+  { t: function(p,g,o,s){ return '在'+o+'与'+g+'之间，<em>'+p+'</em>必须抉择——而'+s+'。'; } },
+  { t: function(p,g,o,s){ return '<em>'+p+'</em>只想'+g+'。随后'+o+'发生，突然间'+s+'已不再重要——活着才是。'; } },
+  { t: function(p,g,o,s){ return g+'原本只是开始，直到<em>'+p+'</em>意识到'+o+'——而'+s+'。'; } },
+  { t: function(p,g,o,s){ return '当<em>'+p+'</em>偶然踏入'+g+'，意外释放了'+o+'，如今'+s+'。'; } }
+]
+};
 
-    // === STATE ===
+// === STATE ===
     let selectedGenre = null;
     let selectedCast = null;
     let rollCount = parseInt(localStorage.getItem('stormy-count') || '0');
@@ -694,6 +766,7 @@ function loadLang() {
 
     function roll() {
       if (isRolling) return;
+      const lang = window._lang || 'en';
       const genre = selectedGenre || pick(genres);
       const cast = selectedCast || pick(casts);
 
@@ -706,16 +779,16 @@ function loadLang() {
       card.classList.remove('visible');
 
       setTimeout(() => {
-        const protag = pick(protagonists[cast]);
-        const goal = pick(goals[genre]);
-        const obstacle = pick(obstacles[genre]);
-        const stake = pick(stakes[genre]);
-        const template = pick(templates);
+        const protag = pick(protagonists[lang][cast]);
+        const goal = pick(goals[lang][genre]);
+        const obstacle = pick(obstacles[lang][genre]);
+        const stake = pick(stakes[lang][genre]);
+        const template = pick(templates[lang]);
 
         const logline = template.t(protag, goal, obstacle, stake);
         lastLogline = logline.replace(/<em>|<\/em>/g, '');
 
-        document.getElementById('logline-genre').textContent = genre + ' · ' + cast;
+        document.getElementById('logline-genre').textContent = (lang === 'zh' ? '类型' : genre) + ' · ' + (lang === 'zh' ? cast : cast);
         document.getElementById('logline-text').innerHTML = logline;
 
         card.classList.add('visible');
