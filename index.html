@@ -1,16 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+window.__i18n = {
+  en: {
+    title: "Random Story — Free Logline Generator",
+    tagline: "Stuck on your story? Roll a logline in one click.",
+    logo: "\u26a1 Random Story",
+    genre: "Genre",
+    cast: "Cast",
+    roll: "\ud83c\udfb2 Roll a Logline",
+    placeholder: "Pick a genre and cast, then roll the dice",
+    copy: "\ud83d\udccb Copy",
+    remix: "\ud83c\udfb2 Remix",
+    share: "\ud83d\udd17 Share",
+    copied: "\u2705 Copied",
+    footer: "Free logline generator for writers. No signup, no limits."
+  },
+  zh: {
+    title: "Random Story \u2014 \u514d\u8c03\u6545\u4e8b\u521b\u610f\u751f\u6210\u5668",
+    tagline: "\u6545\u4e8b\u5361\u4f4f\u4e86\uff1f\u4e00\u952e\u7b5d\u51fa\u6545\u4e8b\u7ebf\u7d22",
+    logo: "\u26a1 Random Story",
+    genre: "\u7c7b\u578b",
+    cast: "\u89d2\u8272",
+    roll: "\ud83c\udfb2 \u7b5d\u51fa\u6545\u4e8b\u7ebf\u7d22",
+    placeholder: "\u9078\u64c7\u7c7b\u578b\u548c\u89d2\u8272\u4eba\u6578\uff0c\u7136\u5f8c\u7b5d\u51fa\u9ab0\u5b50",
+    copy: "\ud83d\udccb \u8907\u88fd",
+    remix: "\ud83c\udfb2 \u91cd\u7b5d",
+    share: "\ud83d\udd17 \u5206\u4eab",
+    copied: "\u2705 \u5df2\u8907\u88fd",
+    footer: "\u514d\u8c03\u6545\u4e8b\u521b\u610f\u751f\u6210\u5668\u3002\u7121\u9700\u6ce8\u518c\uff0c\u7121\u9650\u5236\u3002"
+  }
+};
+var _lang = "en";
+function setLang(l) {
+  _lang = l;
+  localStorage.setItem("rs-lang", l);
+  var t = window.__i18n[l];
+  document.title = t.title;
+  document.querySelector(".logo").textContent = t.logo;
+  document.querySelector(".tagline").textContent = t.tagline;
+  var sects = document.querySelectorAll(".selector-group > label");
+  if(sects[0]) sects[0].textContent = t.genre;
+  if(sects[1]) sects[1].textContent = t.cast;
+  document.getElementById("roll-btn").innerHTML = '<span class="dice-icon">\ud83c\udfb2</span> ' + t.roll;
+  document.getElementById("placeholder").innerHTML = '<div class="icon">\ud83c\udfaa</div>' + t.placeholder;
+  var acts = document.querySelectorAll(".logline-actions .action-btn");
+  if(acts[0]) acts[0].innerHTML = t.copy;
+  if(acts[1]) acts[1].innerHTML = t.remix;
+  if(acts[2]) acts[2].innerHTML = t.share;
+  document.querySelector("footer p").textContent = t.footer;
+  document.querySelectorAll(".lang-btn").forEach(function(b){ b.classList.remove("active"); });
+  document.querySelector(".lang-btn[data-lang=\""+l+"\"]").classList.add("active");
+}
+function loadLang() {
+  var saved = localStorage.getItem("rs-lang") || "en";
+  setLang(saved);
+}
+</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stormy — Random Logline Generator</title>
+  <title>Random Story — Free Logline Generator</title>
   <meta name="description" content="Generate random story loglines by genre and cast type. One click, one logline, zero writer's block.">
-  <meta property="og:title" content="Stormy — Random Logline Generator">
+  <meta property="og:title" content="Random Story — Free Logline Generator">
   <meta property="og:description" content="Stuck on your story? Get a logline in one click.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://randomstory.ai">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Stormy — Random Logline Generator">
+  <meta name="twitter:title" content="Random Story — Free Logline Generator">
   <meta name="twitter:description" content="Stuck on your story? Get a logline in one click.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +77,7 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Stormy — Random Logline Generator",
+    "name": "Random Story — Free Logline Generator",
     "url": "https://randomstory.ai",
     "applicationCategory": "EducationalApplication",
     "operatingSystem": "Web",
@@ -395,8 +453,12 @@
   <div class="ambient"></div>
   <div class="container">
     <header>
-      <h1 class="logo">⚡ Stormy</h1>
-      <p class="tagline">Random logline generator for writers who stare at blank pages</p>
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
+      </div>
+      <h1 class="logo">⚡ Random Story</h1>
+      <p class="tagline">Stuck on your story? Roll a logline in one click.</p>
     </header>
 
     <div class="selectors">
@@ -648,7 +710,7 @@
     function shareLogline() {
       const text = lastLogline.replace(/<em>|<\/em>/g, '');
       if (navigator.share) {
-        navigator.share({ title: 'Stormy Logline', text: text + ' — randomstory.ai' });
+        navigator.share({ title: 'Random Story Logline', text: text + ' — randomstory.ai' });
       } else {
         navigator.clipboard.writeText(text + ' — randomstory.ai');
         const toast = document.getElementById('copy-toast');
@@ -657,7 +719,7 @@
         setTimeout(() => { toast.classList.remove('show'); toast.textContent = 'Copied!'; }, 2000);
       }
     }
-    init();
+    init(); loadLang();
   </script>
 </body>
 </html>
