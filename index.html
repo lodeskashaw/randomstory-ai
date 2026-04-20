@@ -690,12 +690,45 @@ function loadLang() {
       else selectedCast = value;
     }
 
-    function pick(arr) {btn.classList.remove('rolling');
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function roll() {
+      if (isRolling) return;
+      const genre = selectedGenre || pick(genres);
+      const cast = selectedCast || pick(casts);
+
+      isRolling = true;
+      const btn = document.getElementById('roll-btn');
+      btn.classList.add('rolling');
+
+      document.getElementById('placeholder').style.display = 'none';
+      const card = document.getElementById('logline-card');
+      card.classList.remove('visible');
+
+      setTimeout(() => {
+        const protag = pick(protagonists[cast]);
+        const goal = pick(goals[genre]);
+        const obstacle = pick(obstacles[genre]);
+        const stake = pick(stakes[genre]);
+        const template = pick(templates);
+
+        const logline = template(protag, goal, obstacle, stake);
+        lastLogline = logline.replace(/<em>|<\/em>/g, '');
+
+        document.getElementById('logline-genre').textContent = genre + ' · ' + cast;
+        document.getElementById('logline-text').innerHTML = logline;
+
+        card.classList.add('visible');
+        btn.classList.remove('rolling');
+
         rollCount++;
         localStorage.setItem('stormy-count', rollCount.toString());
         document.getElementById('count-num').textContent = rollCount.toLocaleString();
+
+        isRolling = false;
       }, 700);
     }
+
     function copyLogline() {
       navigator.clipboard.writeText(lastLogline.replace(/<em>|<\/em>/g, '')).then(() => {
         const toast = document.getElementById('copy-toast');
